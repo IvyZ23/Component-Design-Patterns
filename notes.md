@@ -4,7 +4,29 @@
 
 **Use object syntax to define props:**
 
-`<script> export default { props: { image: { type: String, required: true }, length: { type: Number, required: true, default: 90 }, image: { type: String, default:'../src/randomimage.png' } } } </script>`
+`
+
+<script> 
+    export default { 
+        props: { 
+            title: { 
+                type: String, 
+                required: true 
+            }, 
+            length: { 
+                type: Number, 
+                required: true, 
+                default: 90 
+            }, 
+            image: { 
+                type: String, 
+                default:'../src/randomimage.png' 
+            }
+    } 
+    } 
+</script>
+
+`
 
 1. What data type(s) is it? (string, number, boolean, array, object, date, function, symbol)
 
