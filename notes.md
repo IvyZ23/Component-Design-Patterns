@@ -1,8 +1,8 @@
-### Component Design Patterns
-
-#### Props
+## Component Design Patterns
 
 ---
+
+### Props
 
 **Use object syntax to define props:**
 
@@ -72,9 +72,11 @@ The above validator checks if the length of the string is longer than zero.
 
 The above validates so that the images have to live in the src directory and that they can only either be a PNG or JPEG file.
 
-**Slots**
+---
 
-Use slots instead of prop based solution (usage of multiple props to achieve something)
+### Slots
+
+**Usage of slots instead of prop based solutions**
 
 Using slots can help avoid the unnecessary complexity from too many props:
 
@@ -102,6 +104,8 @@ Using slots can help avoid the unnecessary complexity from too many props:
 Slots are specialized elements in Vue that allows content similar to HTML to be passed.
 
 All you have to do is declare the slot element inside the component. In order to delcare default values for a slot, simply define it in between the slot elements.
+
+**Naming Slots**
 
 Giving a slot a name would be more precise and can be used to give elements directions as to while slot they fill up:
 
@@ -152,3 +156,121 @@ If a section is not given an explicit name, by default it would go into whatever
 ```
 
 :exclamation: The v-slot direction should only be used on template elements. :exclamation:
+
+**Scoped Slots**
+
+:exclamation: Scope slots are avaiable ONLY to the template block, hence why it is called "scoped", and CANNOT be used outside of the template block (for example, in the script tag) :exclamation:
+
+Scoped slots allows components to expose its data to the slot's template block (passing data child to parent):
+
+```
+**child.vue**
+    <slot name="header" :logo="logoImage"/>
+
+**parent.vue**
+    <template v-slot:header="slotProps">
+        {{ slotProps.logo }} <-- this calls the logo attribute
+    </template>
+```
+
+"slotProps" is an object that contains all the props that have been defined on the particular slot. Through slotProps, the child can pass data through props to the parent function, just as seen above.
+
+Because slot props result in a JavaScript object, ES6 destructuring can be used to make code more concise (only extract the values needed):
+
+```
+**child.vue**
+    <slot name="header" :logo="logoImage"/>
+
+**parent.vue**
+    <template v-slot:header="{ logo }">
+        {{ logo }}
+    </template>
+```
+
+:exclamation: If there is only one slot element like shown below, the v-slot directory can be written directly onto the component and remove the template element
+
+```
+    <componentName v-slot:header="{ logo }">
+        {{ logo }}
+    </componentName>
+```
+
+---
+
+### Dynamically Defining Multiple Variables for v-bind and v-on
+
+**v-bind With No Arguements**
+
+Instead of doing this:
+
+```
+<img v-bind=src="image.src" v-bind:alt="image.alt"/>
+```
+
+Do this:
+
+```
+<img v-bind="{ src: image.src, alt: image.alt }"/>
+```
+
+If the object maps directly onto the key pair in the v-bind (every attribute of the object is called in the v-bind), the code can be simplified by passing in the entire object:
+
+```
+<img v-bind="image">
+```
+
+**v-on Structure**
+
+Instead of:
+
+```
+<img v-on:click="resultOne" v-on:mouseover="resultTwo"/>
+
+<script>
+export default {
+  methods: {
+    openGallery() { ... },
+    showTooltip() { ... }
+  }
+}
+</script>
+```
+
+Use this:
+
+```
+<img v-on:"{ click: resultOne, mouseover: resultTwo }"/>
+
+<script>
+export default {
+  methods: {
+    openGallery() { ... },
+    showTooltip() { ... }
+  }
+}
+</script>
+```
+
+By making a computed property, the same effect can be accomplished:
+
+```
+<template>
+  <img v-on="inputEvents" />
+</template>
+
+<script>
+export default {
+  computed: {
+    inputEvents: {
+      click: this.openGallery,
+      mouseover: this.showTooltip
+    }
+  },
+  methods: {
+    openGallery() { ... },
+    showTooltip() { ... }
+  }
+}
+</script>
+
+```
